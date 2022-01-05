@@ -104,7 +104,6 @@ function build() {
 
 	{
 		cd "$PROJECT_ROOT/src"
-		local LOG_FILE="$LOGS_DIR/build-$os-$arch-$binaryType.log"
 
     {
       CGO_ENABLED=1 \
@@ -113,14 +112,12 @@ function build() {
       CC="$PROJECT_ROOT/helpers/cc.sh" \
       CXX="$PROJECT_ROOT/helpers/cxx.sh" \
       ZTARGET="$zarch-$zos-gnu" \
-        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOG_FILE" 2>&1 &&
+        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" .
         echoGreen "Succeeded.";
     } || {
       ANY_TARGETS_FAILED=true &&
       echoRed "Failed!";
     }
-
-     cat "$LOG_FILE"
 	}
 }
 
