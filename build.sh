@@ -4,13 +4,12 @@ set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$PROJECT_ROOT/build"
-LOGS_DIR="$PROJECT_ROOT/logs"
 ANY_TARGETS_FAILED=false
 
 function main() {
 	echoBlue "Preparing..."
-	rm -rf "$BUILD_DIR" "$LOGS_DIR"
-	mkdir -p "$BUILD_DIR" "$LOGS_DIR"
+	rm -rf "$BUILD_DIR"
+	mkdir -p "$BUILD_DIR"
 
   if [[ $# -lt 3 ]]; then
     build shared darwin amd64
