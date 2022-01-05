@@ -105,6 +105,11 @@ function build() {
 	{
 		cd "$PROJECT_ROOT/src"
 
+		# -ldflags "-s" below is inspired by https://github.com/ziglang/zig/issues/9050#issuecomment-859939664
+		# and fixes errors like the following when building the shared library for darwin/amd64:
+		# /opt/homebrew/Cellar/go/1.17.5/libexec/pkg/tool/darwin_arm64/link: /opt/homebrew/Cellar/go/1.17.5/libexec/pkg/tool/darwin_arm64/link: running strip failed: exit status 1
+    # /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip: error: bad n_sect for symbol table entry 556 in: /private/var/folders/7t/_rsz39554vvgvq2t6b4ztktc0000gn/T/go-build3526877506/b001/exe/libmain.dylib
+
     {
       CGO_ENABLED=1 \
       GOOS=$os \
@@ -112,7 +117,7 @@ function build() {
       CC="$PROJECT_ROOT/helpers/cc.sh" \
       CXX="$PROJECT_ROOT/helpers/cxx.sh" \
       ZTARGET="$zarch-$zos-gnu" \
-        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . 2>&1 &&
+        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" -ldflags "-s" . 2>&1 &&
         echoGreen "Succeeded.";
     } || {
       ANY_TARGETS_FAILED=true &&
