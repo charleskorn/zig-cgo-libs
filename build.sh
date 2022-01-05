@@ -112,7 +112,7 @@ function build() {
       CC="$PROJECT_ROOT/helpers/cc.sh" \
       CXX="$PROJECT_ROOT/helpers/cxx.sh" \
       ZTARGET="$zarch-$zos-gnu" \
-        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" .
+        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . &&
         echoGreen "Succeeded.";
     } || {
       ANY_TARGETS_FAILED=true &&
