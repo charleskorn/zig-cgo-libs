@@ -8,7 +8,7 @@ export ZIG_LOCAL_CACHE_DIR="$PROJECT_ROOT/.zigcache/"
 
 set -x
 
-if [[ "$ZTARGET" == "*-macos-*" ]]; then
+if [[ "$ZTARGET" == *-macos-* ]]; then
   SYSROOT="$(xcrun --show-sdk-path)"
   zig cc -target "$ZTARGET" --sysroot "$SYSROOT" "$@"
 else
