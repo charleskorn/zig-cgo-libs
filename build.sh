@@ -97,6 +97,7 @@ function build() {
 
 	{
 		cd "$PROJECT_ROOT/src"
+		local LOG_FILE="$LOGS_DIR/build-$os-$arch-$binaryType.log"
 
 		CGO_ENABLED=1 \
 		GOOS=$os \
@@ -104,7 +105,7 @@ function build() {
 		CC="$PROJECT_ROOT/helpers/cc.sh" \
 		CXX="$PROJECT_ROOT/helpers/cxx.sh" \
 		ZTARGET="$zarch-$zos-gnu" \
-			go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOGS_DIR/build-$os-$arch-$binaryType.log" 2>&1 || echo "Failed! Check logs in $LOGS_DIR for details."
+			go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOG_FILE" 2>&1 || { echo "Failed! Output was:" && cat "$LOG_FILE"; }
 	}
 }
 
