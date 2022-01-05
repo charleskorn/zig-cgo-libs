@@ -28,5 +28,7 @@ jobs:
         uses: actions/setup-go@v2.1.5
         with:
           go-version: 1.17.5
+      - name: System information
+        run: xcrun --show-sdk-path
       - name: Run build
         run: ./build.sh
