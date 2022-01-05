@@ -30,5 +30,33 @@ jobs:
           go-version: 1.17.5
       - name: System information
         run: xcrun --show-sdk-path
-      - name: Run build
-        run: ./build.sh
+      - name: "Build: shared darwin amd64"
+        if: ${{ always() }}
+        run: ./build.sh shared darwin amd64
+      - name: "Build: archive darwin amd64"
+        if: ${{ always() }}
+        run: ./build.sh archive darwin amd64
+      - name: "Build: shared darwin arm64"
+        if: ${{ always() }}
+        run: ./build.sh shared darwin arm64
+      - name: "Build: archive darwin arm64"
+        if: ${{ always() }}
+        run: ./build.sh archive darwin arm64
+      - name: "Build: shared linux amd64"
+        if: ${{ always() }}
+        run: ./build.sh shared linux amd64
+      - name: "Build: archive linux amd64"
+        if: ${{ always() }}
+        run: ./build.sh archive linux amd64
+      - name: "Build: shared linux arm64"
+        if: ${{ always() }}
+        run: ./build.sh shared linux arm64
+      - name: "Build: archive linux arm64"
+        if: ${{ always() }}
+        run: ./build.sh archive linux arm64
+      - name: "Build: shared windows amd64"
+        if: ${{ always() }}
+        run: ./build.sh shared windows amd64
+      - name: "Build: archive windows amd64"
+        if: ${{ always() }}
+        run: ./build.sh archive windows amd64

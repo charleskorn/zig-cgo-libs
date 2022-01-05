@@ -12,16 +12,20 @@ function main() {
 	rm -rf "$BUILD_DIR" "$LOGS_DIR"
 	mkdir -p "$BUILD_DIR" "$LOGS_DIR"
 
-	build shared darwin amd64
-	build archive darwin amd64
-	build shared darwin arm64
-	build archive darwin arm64
-	build shared linux amd64
-	build archive linux amd64
-	build shared linux arm64
-	build archive linux arm64
-	build shared windows amd64
-	build archive windows amd64
+  if [[ $# -lt 3 ]]; then
+    build shared darwin amd64
+    build archive darwin amd64
+    build shared darwin arm64
+    build archive darwin arm64
+    build shared linux amd64
+    build archive linux amd64
+    build shared linux arm64
+    build archive linux arm64
+    build shared windows amd64
+    build archive windows amd64
+  else
+    build "$1" "$2" "$3"
+  fi
 
 	echo
 
@@ -144,4 +148,4 @@ function echoGreen() {
   echo "$(tput setaf 2)$text$(tput sgr0)"
 }
 
-main
+main "$@"
