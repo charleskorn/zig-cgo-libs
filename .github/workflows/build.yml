@@ -9,7 +9,7 @@ defaults:
 
 jobs:
   build:
-    name: "Build ${{ matrix.zig_version }}"
+    name: "Build with Zig ${{ matrix.zig_version }}"
     runs-on: macos-11
     strategy:
       fail-fast: false
