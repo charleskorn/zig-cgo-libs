@@ -7,7 +7,7 @@ BUILD_DIR="$PROJECT_ROOT/build"
 LOGS_DIR="$PROJECT_ROOT/logs"
 
 function main() {
-	echo "Preparing..."
+	echoBlue "Preparing..."
 	rm -rf "$BUILD_DIR" "$LOGS_DIR"
 	mkdir -p "$BUILD_DIR" "$LOGS_DIR"
 
@@ -23,7 +23,7 @@ function main() {
 	build archive windows amd64
 
 	echo
-	echo "Done."
+	echoGreen "All targets finished."
 }
 
 function build() {
@@ -32,7 +32,7 @@ function build() {
 	local arch=$3
 
 	echo
-	echo "Building $binaryType library for $os $arch..."
+	echoBlue "Building $binaryType library for $os $arch..."
 
 	local outputDir="$BUILD_DIR/$os/$arch/$binaryType"
 	mkdir -p "$outputDir"
@@ -99,14 +99,38 @@ function build() {
 		cd "$PROJECT_ROOT/src"
 		local LOG_FILE="$LOGS_DIR/build-$os-$arch-$binaryType.log"
 
-		CGO_ENABLED=1 \
-		GOOS=$os \
-		GOARCH=$arch \
-		CC="$PROJECT_ROOT/helpers/cc.sh" \
-		CXX="$PROJECT_ROOT/helpers/cxx.sh" \
-		ZTARGET="$zarch-$zos-gnu" \
-			go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOG_FILE" 2>&1 || { echo "Failed! Output was:" && cat "$LOG_FILE"; }
+    {
+      CGO_ENABLED=1 \
+      GOOS=$os \
+      GOARCH=$arch \
+      CC="$PROJECT_ROOT/helpers/cc.sh" \
+      CXX="$PROJECT_ROOT/helpers/cxx.sh" \
+      ZTARGET="$zarch-$zos-gnu" \
+        go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOG_FILE" 2>&1 &&
+        echoGreen "Succeeded.";
+			} || {
+			  echoRed "Failed!" &&
+			  cat "$LOG_FILE";
+     }
 	}
+}
+
+function echoRed() {
+  local text=$1
+
+  echo "$(tput setaf 1)$text$(tput sgr0)"
+}
+
+function echoBlue() {
+  local text=$1
+
+  echo "$(tput setaf 4)$text$(tput sgr0)"
+}
+
+function echoGreen() {
+  local text=$1
+
+  echo "$(tput setaf 2)$text$(tput sgr0)"
 }
 
 main
