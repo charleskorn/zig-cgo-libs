@@ -5,6 +5,7 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$PROJECT_ROOT/build"
 LOGS_DIR="$PROJECT_ROOT/logs"
+ANY_TARGETS_FAILED=false
 
 function main() {
 	echoBlue "Preparing..."
@@ -23,7 +24,13 @@ function main() {
 	build archive windows amd64
 
 	echo
-	echoGreen "All targets finished."
+
+	if [[ "$ANY_TARGETS_FAILED" == "true" ]]; then
+	  echoRed "One or more targets failed."
+	  exit 1
+  else
+	  echoGreen "All targets finished."
+	fi
 }
 
 function build() {
@@ -108,10 +115,12 @@ function build() {
       ZTARGET="$zarch-$zos-gnu" \
         go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" . >"$LOG_FILE" 2>&1 &&
         echoGreen "Succeeded.";
-			} || {
-			  echoRed "Failed!" &&
-			  cat "$LOG_FILE";
-     }
+    } || {
+      ANY_TARGETS_FAILED=true &&
+      echoRed "Failed!";
+    }
+
+     cat "$LOG_FILE"
 	}
 }
 
