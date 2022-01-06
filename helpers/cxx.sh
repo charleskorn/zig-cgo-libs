@@ -10,7 +10,8 @@ set -x
 
 if [[ "$ZTARGET" == *-macos-* ]]; then
   SYSROOT="$(xcrun --show-sdk-path)"
-  zig c++ -target "$ZTARGET" --sysroot "$SYSROOT" "$@"
+  # These -Wno-... flags are based on the suggestions in https://github.com/golang/go/issues/38876#issuecomment-669338355. They could also be set with the CGO_CPPFLAGS environment variable.
+  zig c++ -target "$ZTARGET" --sysroot "$SYSROOT" "-I$SYSROOT/usr/include" "-F$SYSROOT/System/Library/Frameworks" "-L$SYSROOT/usr/lib" -Wno-expansion-to-defined -Wno-availability -Wno-nullability-completeness "$@"
 else
   zig c++ -target "$ZTARGET" "$@"
 fi
