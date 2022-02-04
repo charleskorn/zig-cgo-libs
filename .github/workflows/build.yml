@@ -9,54 +9,22 @@ defaults:
 
 jobs:
   build:
-    name: "Build with Zig ${{ matrix.zig_version }}"
+    name: "Build with Zig"
     runs-on: macos-11
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - zig_version: 0.9.0
-          - zig_version: 0.10.0-dev.183+5c228765f
     steps:
       - name: Check out code
         uses: actions/checkout@v2.4.0
       - name: Set up Zig
         uses: goto-bus-stop/setup-zig@v1.3.0
         with:
-          version: ${{ matrix.zig_version }}
+          version: 0.9.9
       - name: Set up Golang
         uses: actions/setup-go@v2.1.5
         with:
           go-version: 1.17.5
       - name: System information
         run: xcrun --show-sdk-path
-      - name: "Build: shared darwin amd64"
-        if: ${{ always() }}
-        run: ./build.sh shared darwin amd64
-      - name: "Build: archive darwin amd64"
-        if: ${{ always() }}
-        run: ./build.sh archive darwin amd64
-      - name: "Build: shared darwin arm64"
-        if: ${{ always() }}
-        run: ./build.sh shared darwin arm64
-      - name: "Build: archive darwin arm64"
-        if: ${{ always() }}
-        run: ./build.sh archive darwin arm64
-      - name: "Build: shared linux amd64"
-        if: ${{ always() }}
-        run: ./build.sh shared linux amd64
-      - name: "Build: archive linux amd64"
-        if: ${{ always() }}
-        run: ./build.sh archive linux amd64
-      - name: "Build: shared linux arm64"
-        if: ${{ always() }}
-        run: ./build.sh shared linux arm64
-      - name: "Build: archive linux arm64"
-        if: ${{ always() }}
-        run: ./build.sh archive linux arm64
-      - name: "Build: shared windows amd64"
-        if: ${{ always() }}
-        run: ./build.sh shared windows amd64
-      - name: "Build: archive windows amd64"
-        if: ${{ always() }}
-        run: ./build.sh archive windows amd64
+      - name: Run local build
+        run: ./build-native.sh shared
+      - name: Run cross-compilation build
+        run: ./build-cross.sh shared $(uname | tr '[:upper:]' '[:lower:]') $(uname -m)

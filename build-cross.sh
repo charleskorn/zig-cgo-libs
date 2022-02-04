@@ -4,36 +4,23 @@ set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$PROJECT_ROOT/build"
-ANY_TARGETS_FAILED=false
 
 function main() {
+  if [[ $# -ne 3 ]]; then
+    echoRed "Must provide exactly three arguments."
+    exit 1
+  fi
+
 	echoBlue "Preparing..."
 	rm -rf "$BUILD_DIR"
 	mkdir -p "$BUILD_DIR"
 
-  if [[ $# -lt 3 ]]; then
-    build shared darwin amd64
-    build archive darwin amd64
-    build shared darwin arm64
-    build archive darwin arm64
-    build shared linux amd64
-    build archive linux amd64
-    build shared linux arm64
-    build archive linux arm64
-    build shared windows amd64
-    build archive windows amd64
-  else
-    build "$1" "$2" "$3"
-  fi
+  clearGoBuildCache
+  build "$1" "$2" "$3"
+}
 
-	echo
-
-	if [[ "$ANY_TARGETS_FAILED" == "true" ]]; then
-	  echoRed "One or more targets failed."
-	  exit 1
-  else
-	  echoGreen "All targets finished."
-	fi
+function clearGoBuildCache() {
+  go clean -cache
 }
 
 function build() {
@@ -123,7 +110,6 @@ function build() {
         go build -buildmode="c-$binaryType" -o="$outputDir/$outputFile" -ldflags "-s" . 2>&1 &&
         echoGreen "Succeeded.";
     } || {
-      ANY_TARGETS_FAILED=true &&
       echoRed "Failed!";
     }
 	}
