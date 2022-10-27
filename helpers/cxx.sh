@@ -12,8 +12,8 @@ if [[ -z "${ZTARGET+x}" ]]; then
   zig c++ "$@"
 else
   SYSROOT="$(xcrun --show-sdk-path)"
-  # The -I, -F and -L flags are required to configure the sysroot correctly - see https://github.com/ziglang/zig/issues/10513#issuecomment-1005652047.
-  zig c++ -target "$ZTARGET" --sysroot "$SYSROOT" "-I$SYSROOT/usr/include" "-F$SYSROOT/System/Library/Frameworks" "-L$SYSROOT/usr/lib" "$@"
+  # The -I, -F and -L flags are required to configure the sysroot correctly - see https://github.com/ziglang/zig/issues/10790#issuecomment-1030712395.
+  zig c++ -target "$ZTARGET" --sysroot "$SYSROOT" "-I/usr/include" "-F/System/Library/Frameworks" "-L/usr/lib" "$@"
 fi
 
 set +x
